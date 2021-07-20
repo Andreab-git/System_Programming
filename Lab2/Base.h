@@ -73,6 +73,12 @@ class Directory: public Base {
 public:
     static void ciao() {cout<<"aaa";}
 
+    /** <h3>Descrizione</h3>
+     *  Restituisce la radice.<br>
+     *  Se la radice e' un nullptr, allora invoca il metodo <i>make</i> che crea la directory
+     *  assegnando il nome '/' ed un weak_ptr a <i>nullptr</i>
+     * @return shared_ptr di tipo Directory
+     */
     static shared_ptr<Directory> getRoot(){
         if(root == nullptr) {
             root = make("/", shared_ptr<Directory>(nullptr));
