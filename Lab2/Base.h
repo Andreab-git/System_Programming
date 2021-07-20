@@ -81,7 +81,7 @@ class Directory : public Base {
      * @param parent: Il puntatore al padre della directory che si vuole creare
      * @return shared_ptr di tipo Directory
      */
-    static shared_ptr<Directory> make_dir(string name, weak_ptr<Directory> parent) {
+    static shared_ptr<Directory> make_dir(const string &name, weak_ptr<Directory> parent) {
         shared_ptr<Directory> dir = shared_ptr<Directory>(new Directory(name));
         dir->self = dir;
         dir->parent = parent.lock() != nullptr ? parent : dir;
@@ -110,7 +110,7 @@ public:
      * @param name: Il nome della directory che si vuole creare
      * @return shared_ptr alla directory creata
      */
-    shared_ptr<Directory> addDirectory(const string name) {
+    shared_ptr<Directory> addDirectory(const string &name) {
         // Crea una nuova directory
         shared_ptr<Directory> dir = make_dir(name, self);
         // Salva il puntatore nella lista contenente i figli
@@ -124,18 +124,23 @@ public:
      *
      * @return
      */
-    shared_ptr<File> addFile(string name, uintmax_t size) {
+    shared_ptr<File> addFile(const string &name, uintmax_t size) {
         shared_ptr<File> f = make_shared<File>(name, size);
         children.push_back(f);
         return f;
     }
 
     /** <h3>Descrizione</h3>
-     *  .<br>
+     * Restituisce una directory figlio il cui nome corrisponde a <i>name</i> e permette di navigare tra
+     * i figli(".") o il padre("..").<br>
+     * Se si inserisce . , restituisce il puntatore a questa cartella. <br>
+     * Se si inserice .. , restituisce il puntatore al padre
      *
-     * @return
+     * @param name: Il nome della directory figlio contenuta nella directory in cui ci si trova oppure,
+     * inserendo ".." o "." e' possibile ottenere il puntatore al <i>padre</i> o alla <i>cartella corrente</i>.
+     * @return Uno shared_ptr di tipo <i>Base</i>
      */
-    shared_ptr<Base> get(std::string name) {
+    shared_ptr<Base> get_directory(const std::string &name) {
         if (name == ".") {
             return this->self.lock();
         }
@@ -158,8 +163,8 @@ public:
      *
      * @return
      */
-    shared_ptr<Directory> getDir(string name) {
-        shared_ptr<Base> dir = this->get(name);
+    shared_ptr<Directory> getDir(const string &name) {
+        shared_ptr<Base> dir = this->get_directory(name);
         if (dir == nullptr || dir->mType() != TDir) {
             return shared_ptr<Directory>(nullptr);
         } else {
@@ -173,7 +178,7 @@ public:
      * @return
      */
     shared_ptr<File> getFile(string name) {
-        shared_ptr<Base> file = this->get(name);
+        shared_ptr<Base> file = this->get_directory(name);
         if (file == nullptr || file->mType() != TFile) {
             return shared_ptr<File>(nullptr);
         } else {
@@ -187,7 +192,7 @@ public:
      * @return
      */
     void remove(string name) {
-        shared_ptr<Base> target = this->get(name);
+        shared_ptr<Base> target = this->get_directory(name);
         if (target != nullptr) {
             children.remove(target);
         }
