@@ -133,38 +133,41 @@ public:
     /** <h3>Descrizione</h3>
      * Restituisce una directory figlio il cui nome corrisponde a <i>name</i> e permette di navigare tra
      * i figli(".") o il padre("..").<br>
-     * Se si inserisce . , restituisce il puntatore a questa cartella. <br>
-     * Se si inserice .. , restituisce il puntatore al padre
+     * Se si inserisce '.' , restituisce il puntatore a questa cartella. <br>
+     * Se si inserice '..' , restituisce il puntatore al padre
      *
      * @param name: Il nome della directory figlio contenuta nella directory in cui ci si trova oppure,
      * inserendo ".." o "." e' possibile ottenere il puntatore al <i>padre</i> o alla <i>cartella corrente</i>.
      * @return Uno shared_ptr di tipo <i>Base</i>
      */
-    shared_ptr<Base> get_directory(const std::string &name) {
-        if (name == ".") {
-            return this->self.lock();
-        }
+    shared_ptr<Base> get(const std::string &name) {
+        // E' stato richiesto il puntatore alla cartella corrente
+        if (name == ".") return this->self.lock();
 
-        if (name == "..") {
-            return this->parent.lock();
-        }
+        // E' stato richiesto il puntatore al padre della cartella
+        if (name == "..") return this->parent.lock();
 
+        // Viene eseguito un controllo, se esiste il nome passato come parametro,
+        // nella lista di figli della directory
         for (auto c: children) {
             if (c->getName() == name) {
                 return c;
             }
         }
+
+        // Se nessuno dei controlli precedenti e' positivo, allora viene restituito un puntatore a null
         return shared_ptr<Base>(nullptr);
     }
 
 
     /** <h3>Descrizione</h3>
-     *  .<br>
+     *  Fornisce un puntatore .<br>
      *
+     * @param name: Il nome della directory di cui si vuole ottenere un puntatore.
      * @return
      */
     shared_ptr<Directory> getDir(const string &name) {
-        shared_ptr<Base> dir = this->get_directory(name);
+        shared_ptr<Base> dir = this->get(name);
         if (dir == nullptr || dir->mType() != TDir) {
             return shared_ptr<Directory>(nullptr);
         } else {
@@ -178,7 +181,7 @@ public:
      * @return
      */
     shared_ptr<File> getFile(string name) {
-        shared_ptr<Base> file = this->get_directory(name);
+        shared_ptr<Base> file = this->get(name);
         if (file == nullptr || file->mType() != TFile) {
             return shared_ptr<File>(nullptr);
         } else {
@@ -187,15 +190,20 @@ public:
     };
 
     /** <h3>Descrizione</h3>
-     *  .<br>
-     *
+     *  Rimuove dalla collezione di figli della directory corrente l'oggetto di nome <i>name</i>, se esiste,
+     *  restituendo true.<br>
+     *  Se l'oggetto indicato non esiste o si cerca di rimuovere ".." o "." viene restituito false
      * @return
      */
-    void remove(string name) {
-        shared_ptr<Base> target = this->get_directory(name);
+    bool remove(const string &name) {
+        // Prima di tutto, cerco di ottenere un puntatore ad una directory
+        shared_ptr<Base> target = this->get(name);
+        // Se quel puntatore che ottengo e' diverso da nullptr allora lo rimuovo dai figli
         if (target != nullptr) {
             children.remove(target);
+            return true;
         }
+        return false;
     }
 
     /** <h3>Descrizione</h3>
