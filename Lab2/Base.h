@@ -39,6 +39,11 @@ public:
         this->name = name;
     }
 
+    /** <h3>Descrizione</h3>
+     *  Restituisce il tipo di istanza (Directory) codificato come intero.<br>
+     *
+     *  @return Tfile: intero rappresentante il tipo di istanza
+     */
     int mType() const override {
         return TFile;
     }
@@ -203,6 +208,7 @@ public:
             children.remove(target);
             return true;
         }
+        // Se il puntatore che ottengo e' un nullptr, allora ritorno false
         return false;
     }
 
@@ -216,14 +222,14 @@ public:
     }
 
     /** <h3>Descrizione</h3>
-     *  .<br>
+     *  Stampa l'albero di directory a partire dalla directory corrente.<br>
      *
-     * @return
+     * @param indent: Il numero di spazi di indentazione (uint)
      */
     void ls(uint indent = 0) const override {
         for (int i = 0; i < indent; i++)
             std::cout << " ";
-        std::cout << "+ " << name << endl;
+        std::cout << "[+] " << name << endl;
         for (auto child: children) {
             child->ls(indent + 4);
         }
