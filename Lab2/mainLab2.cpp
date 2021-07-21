@@ -1,5 +1,6 @@
 #include <iostream>
-#include "../Lab2/Base.h"
+#include "lib/DurationLogger.h"
+#include "lib/Base.h"
 #include <memory>
 
 using namespace std;
@@ -25,8 +26,12 @@ int main() {
 
     cout << "----" << endl;
 
-    root->remove("beta");
-    root->ls(4);
+    {
+        DurationLogger dl("Test durata");
+        root->remove("beta");
+        root->ls(4);
+    }
+
 
     cout << "----" << endl;
 
