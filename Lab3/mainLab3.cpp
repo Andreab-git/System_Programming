@@ -86,6 +86,8 @@ void test_shared() {
             LOG1("---------------------------------------------------");
         }
         my_shared<Object> sp2{sp};
+        // Qui il counter ha valore 2 perche' quando viene creato l'oggetto sp2, viene usato un copy costructor
+        // che nell'ultima istruzione, va ad incrementare il valore del counter di sp2.
         cout << "Ptr counter di sp2: " << sp2.use_count() << endl;
 
         if (debug) {
@@ -97,9 +99,16 @@ void test_shared() {
         }
         my_shared<Object> sp3{new Object()};
 
+        // Dato che sp ed sp2 hanno un puntatore a count uguale, sp ed sp2 avranno lo stesso valore di count
+        // In questo caso il valore e' 2.
         cout << "Ptr counter di sp: " << sp.use_count() << endl;
         cout << "Ptr counter di sp2: " << sp2.use_count() << endl;
+        // sp3 viene creato utilizzando nuovamente il costruttore my_shared(T *ptr): ref(ptr), count(new u_int(1))
+        // pertanto avra' un counter inizializzato a 1 che corrisponde al valore stampato a video.
         cout << "Ptr counter di sp3: " << sp3.use_count() << endl;
+
+        // Essendo stato utilizzato solamente 2 volte il costruttore my_shared(T *ptr): ref(ptr), count(new u_int(1)),
+        // e' stata fatta solo 2 volte la new Object pertanto il valore count registrato da Tracker sara' uguale a 2.
         cout << "Tracker sp:" << sp->refs() << endl;
         cout << "Tracker sp2:" << sp2->refs() << endl;
         cout << "Tracker sp3:" << sp3->refs() << endl;
