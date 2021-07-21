@@ -27,7 +27,7 @@ struct process {
     set<string> map_files; // mapped files in /proc/nnn/map_files
     vector<process_p> children;
 
-    process(int pid): pid(pid){};
+    process(int pid) : pid(pid) {};
 
     void clear() {
         status.clear();
@@ -39,7 +39,7 @@ struct process {
 
 class ProcessManager {
 
-    map<int , process_p> processes;  // pid -> process
+    map<int, process_p> processes;  // pid -> process
 
     vector<process_p> get_subtree(int root);
 

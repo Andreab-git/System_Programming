@@ -13,6 +13,8 @@
 
 template <typename D>
 class Tracker {
+private:
+
     static u_int count;
 
 public:
