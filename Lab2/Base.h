@@ -7,6 +7,12 @@
 #include <experimental/filesystem>
 #include <iostream>
 
+#define LOG1(x) std::cout << x << std::endl
+#define LOG2(x, y) std::cout << x << " " << y << std::endl
+#define LOG3(x, y, z) std::cout << x << " " << y << " " << z << std::endl
+#define LOG4(x, y, z, w) std::cout << x << " " << y << " " << z << " " << w << std::endl
+
+static bool debug = true;
 
 using namespace std;
 
@@ -115,6 +121,10 @@ class Directory : public Base {
     }
 
 public:
+
+    ~Directory() {
+        if (debug) LOG4("Chiamato distruttore per \"", this->getName(), "\" indirizzo:", (void *) this);
+    }
 
     /** <h3>Descrizione</h3>
      *  Restituisce la radice.<br>
@@ -267,8 +277,11 @@ public:
      * @param indent: Il numero di spazi di indentazione (uint)
      */
     void ls(uint indent = 0) const override {
+        string rootF = "/";
+        if (this->name != rootF) {
         for (int i = 0; i < indent; i++)
             std::cout << " ";
+        }
         std::cout << "[+] " << name << endl;
         for (auto child: children) {
             child->ls(indent + 4);
