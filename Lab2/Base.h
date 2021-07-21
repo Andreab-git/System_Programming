@@ -1,10 +1,5 @@
-//
-// Created by ff on 4/23/20.
-//
-//#include <>
-
-#ifndef LEZIONE_2_BASE_H
-#define LEZIONE_2_BASE_H
+#ifndef BASE_H
+#define BASE_H
 
 #include <string>
 #include <memory>
@@ -16,8 +11,12 @@
 using namespace std;
 
 enum MType {
-    TDir = 0, TFile = 1
+    is_a_Dir = 0, is_a_File = 1
 };
+
+// ###########################################
+// ##############     BASE    ################
+// ###########################################
 
 class Base {
 protected:
@@ -32,6 +31,10 @@ public:
     virtual void ls(uint indent = 0) const = 0;
 };
 
+// ################################################
+// #############        FILE       ################
+// ################################################
+
 class File : public Base {
     uintmax_t size;
 public:
@@ -40,12 +43,12 @@ public:
     }
 
     /** <h3>Descrizione</h3>
-     *  Restituisce il tipo di istanza (Directory) codificato come intero.<br>
+     *  Restituisce il tipo di istanza (File) codificato come intero.<br>
      *
      *  @return Tfile: intero rappresentante il tipo di istanza
      */
     int mType() const override {
-        return TFile;
+        return is_a_File;
     }
 
     /** <h3>Descrizione</h3>
@@ -62,6 +65,10 @@ public:
 
 
 };
+
+// ################################################
+// ##############     DIRECTORY    ################
+// ################################################
 
 class Directory : public Base {
 
@@ -173,7 +180,7 @@ public:
      */
     shared_ptr<Directory> getDir(const string &name) {
         shared_ptr<Base> dir = this->get(name);
-        if (dir == nullptr || dir->mType() != TDir) {
+        if (dir == nullptr || dir->mType() != is_a_Dir) {
             return shared_ptr<Directory>(nullptr);
         } else {
             return dynamic_pointer_cast<Directory>(dir);
@@ -187,7 +194,7 @@ public:
      */
     shared_ptr<File> getFile(string name) {
         shared_ptr<Base> file = this->get(name);
-        if (file == nullptr || file->mType() != TFile) {
+        if (file == nullptr || file->mType() != is_a_File) {
             return shared_ptr<File>(nullptr);
         } else {
             return dynamic_pointer_cast<File>(file);
@@ -212,13 +219,13 @@ public:
         return false;
     }
 
-    /** <h3>Descrizione</h3>
-     *  .<br>
+     /** <h3>Descrizione</h3>
+     *  Restituisce il tipo di istanza (Directory) codificato come intero.<br>
      *
-     * @return
+     *  @return Tfile: intero rappresentante il tipo di istanza
      */
     int mType() const override {
-        return TDir;
+        return is_a_Dir;
     }
 
     /** <h3>Descrizione</h3>
@@ -238,4 +245,4 @@ public:
 };
 
 
-#endif //LEZIONE_2_BASE_H
+#endif // BASE_H
