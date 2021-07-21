@@ -10,7 +10,7 @@
 
 using namespace std;
 
-enum MType {
+enum MediaType {
     is_a_Dir = 0, is_a_File = 1
 };
 
@@ -26,10 +26,18 @@ public:
         return name;
     };
 
-    virtual int mType() const = 0;
+    // Un metodo virtual rende la classe Base astratta
+    // si mette const = 0; quando il metodo virtual e' puro
+    // non si suppone che in questa classe verra' implementato
+    virtual int mediaType() const = 0;
 
+    // Un metodo virtual rende la classe Base astratta
     virtual void ls(uint indent = 0) const = 0;
 };
+
+
+
+
 
 // ################################################
 // #############        FILE       ################
@@ -45,16 +53,17 @@ public:
     /** <h3>Descrizione</h3>
      *  Restituisce il tipo di istanza (File) codificato come intero.<br>
      *
-     *  @return Tfile: intero rappresentante il tipo di istanza
+     *  @return is_a_file: intero rappresentante il tipo di istanza, in questo caso vale 1
      */
-    int mType() const override {
+    int mediaType() const override {
         return is_a_File;
     }
 
     /** <h3>Descrizione</h3>
-     *  .<br>
+     *  Permette di formattare lo standard output riferito ad un file.<br>
+     *  L'output che si ottiene non e' altro che la stampa a video di <i>nome e dimensione</i> del File.
      *
-     * @return
+     *  @param indent: rappresenta il numero di spazi che verranno inseriti prima di stampare nome e dimensione.
      */
     void ls(uint indent) const override {
         for (int i = 0; i < indent; i++) {
@@ -65,6 +74,9 @@ public:
 
 
 };
+
+
+
 
 // ################################################
 // ##############     DIRECTORY    ################
@@ -84,8 +96,10 @@ class Directory : public Base {
 
     /** <h3>Descrizione</h3>
      *
-     *  Chiama il costruttore di <i>Directory</i> per generare un nuovo shared_ptr ad una directory di nome <i>name</i>.<br>
-     *  Salva il valore del puntatore in una variabile interna alla classe. Se il parametro <i>parent</i>
+     *  Chiama il costruttore di <i>Directory</i> per generare un nuovo shared_ptr
+     *  ad una directory di nome <i>name</i>.<br>
+     *  Salva il valore del puntatore in una variabile interna alla classe.
+     *  Se il parametro <i>parent</i>
      *  e' diverso da null, allora assegno il valore del puntatore (che rappresenta il padre)
      *  alla variabile <i>parent<i/>.<br>
      *
@@ -143,13 +157,15 @@ public:
     }
 
     /** <h3>Descrizione</h3>
-     * Restituisce una directory figlio il cui nome corrisponde a <i>name</i> e permette di navigare tra
+     * Restituisce una directory figlio il cui nome corrisponde a <i>name</i>
+     * e permette di navigare tra
      * i figli(".") o il padre("..").<br>
      * Se si inserisce '.' , restituisce il puntatore a questa cartella. <br>
      * Se si inserice '..' , restituisce il puntatore al padre
      *
-     * @param name: Il nome della directory figlio contenuta nella directory in cui ci si trova oppure,
-     * inserendo ".." o "." e' possibile ottenere il puntatore al <i>padre</i> o alla <i>cartella corrente</i>.
+     * @param name: Il nome della directory figlio contenuta nella directory
+     * in cui ci si trova oppure, inserendo ".." o "." e' possibile ottenere
+     * il puntatore al <i>padre</i> o alla <i>cartella corrente</i>.
      * @return Uno shared_ptr di tipo <i>Base</i>
      */
     shared_ptr<Base> get(const std::string &name) {
@@ -180,7 +196,7 @@ public:
      */
     shared_ptr<Directory> getDir(const string &name) {
         shared_ptr<Base> dir = this->get(name);
-        if (dir == nullptr || dir->mType() != is_a_Dir) {
+        if (dir == nullptr || dir->mediaType() != is_a_Dir) {
             return shared_ptr<Directory>(nullptr);
         } else {
             return dynamic_pointer_cast<Directory>(dir);
@@ -194,7 +210,7 @@ public:
      */
     shared_ptr<File> getFile(string name) {
         shared_ptr<Base> file = this->get(name);
-        if (file == nullptr || file->mType() != is_a_File) {
+        if (file == nullptr || file->mediaType() != is_a_File) {
             return shared_ptr<File>(nullptr);
         } else {
             return dynamic_pointer_cast<File>(file);
@@ -222,9 +238,9 @@ public:
      /** <h3>Descrizione</h3>
      *  Restituisce il tipo di istanza (Directory) codificato come intero.<br>
      *
-     *  @return Tfile: intero rappresentante il tipo di istanza
+     *  @return is_a_dir: intero rappresentante il tipo di istanza, in questo caso vale 0
      */
-    int mType() const override {
+    int mediaType() const override {
         return is_a_Dir;
     }
 
