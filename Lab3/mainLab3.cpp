@@ -86,6 +86,7 @@ void test_shared() {
             LOG1("---------------------------------------------------");
         }
         my_shared<Object> sp2{sp};
+        cout << "Ptr counter di sp2: " << sp2.use_count() << endl;
 
         if (debug) {
             LOG1("");
@@ -97,7 +98,7 @@ void test_shared() {
         my_shared<Object> sp3{new Object()};
 
         cout << "Ptr counter di sp: " << sp.use_count() << endl;
-        cout << "Ptr counter di sp2: " << sp3.use_count() << endl;
+        cout << "Ptr counter di sp2: " << sp2.use_count() << endl;
         cout << "Ptr counter di sp3: " << sp3.use_count() << endl;
         cout << "Tracker sp:" << sp->refs() << endl;
         cout << "Tracker sp2:" << sp2->refs() << endl;
