@@ -2,6 +2,7 @@
 #define SYSTEM_PROGRAMMING_TRACKER_H
 
 #include <cstdlib>
+#include "logger_msgs.h"
 
 template <typename D>
 class Tracker {
@@ -9,7 +10,10 @@ class Tracker {
 
 public:
     Tracker() {count++;}
-    ~Tracker() {count--;}
+    ~Tracker() {
+        LOG2("Deconstructor for", (void*) this);
+        count--;
+    }
 
     static u_int refs() { return count; }
 };
