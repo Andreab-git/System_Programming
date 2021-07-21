@@ -16,7 +16,11 @@ class Tracker {
     static u_int count;
 
 public:
-    Tracker() {count++;}
+    Tracker() {
+        if(debug) LOG2("Constructor for", (void*) this);
+        count++;
+    }
+
     ~Tracker() {
         if(debug) LOG2("Deconstructor for", (void*) this);
         count--;

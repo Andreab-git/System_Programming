@@ -13,21 +13,31 @@ class my_shared {
     T *ref = nullptr;
     u_int *count = nullptr;
 
+    // Costruttore privato
     my_shared() {};
 
-    // move operators have little usefulness since the number of operations is even greater than copy
+    // Costruttore privato
     my_shared(my_shared<T> && other) = delete;
-    my_shared<T>& operator=(my_shared<T> && other) = delete;
+
 
 public:
-    explicit my_shared(T *p):ref(p), count(new u_int(1)) { }
-
-    my_shared(const my_shared<T> &sp) {
-        this->ref = sp.ref;
-        this->count = sp.count;
-        (*(this->count)) ++;
+    // Costruttore pubblico per inizializzare count a 1
+    explicit my_shared(T *ptr): ref(ptr), count(new u_int(1)) {
+        if(debug) LOG1("Chiamato costruttore con parametro T *ptr");
     }
 
+    // Copy Constructor
+    my_shared(const my_shared<T> &sh_ptr) {
+        // Assegno il puntatore dell'oggetto sh_ptr a this->ref
+        this->ref = sh_ptr.ref;
+        // Assegno il valore di count dell'oggetto sh_ptr a this->count
+        this->count = sh_ptr.count;
+        // Incremento il valore di count di questo oggetto
+        (*(this->count)) ++;
+        if(debug) LOG1("Chiamato costruttore con parametro const my_shared<T> &sh_ptr");
+    }
+
+    // Overloading dell'operatore di assegnamento
     my_shared<T> &operator=(my_shared<T> other) {
         swap(*this, other);
         return *this;
@@ -41,9 +51,13 @@ public:
         return *ref;
     }
 
+    // Restituisce il valore di count di questa classe
     u_int use_count() {
         return *(this->count);
     }
+
+    // move operators have little usefulness since the number of operations is even greater than copy
+    my_shared<T>& operator=(my_shared<T> && other) = delete;
 
     ~my_shared(){
         (*(this->count))--;

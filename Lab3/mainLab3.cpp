@@ -66,17 +66,49 @@ void test_refs() {
 }
 
 void test_shared() {
+    DurationLogger dl("Test shared");
     {
-        DurationLogger dl("Test shared");
-        my_shared<Object> sp(new Object());
-        cout << "use " << sp.use_count() << endl;
-        my_shared<Object> sp2(sp);
-        my_shared<Object> sp3(new Object());
-        cout << "use " << sp.use_count() << endl;
-        cout << "Tracker " << sp->refs() << endl;
+        if (debug) {
+            LOG1("");
+            LOG1("---------------------------------------------------");
+            LOG1("Chiamata costruttore di my_shared passando parametro \"new Object\"");
+            LOG1("my_shared<Object> sp{new Object()};");
+            LOG1("---------------------------------------------------");
+        }
+        my_shared<Object> sp{new Object()};
+        cout << "Ptr counter di sp: " << sp.use_count() << endl;
+
+        if (debug) {
+            LOG1("");
+            LOG1("---------------------------------------------------");
+            LOG1("Chiamata costruttore passando un oggetto di tipo my_shared<T>");
+            LOG1("my_shared<Object> sp2(sp);");
+            LOG1("---------------------------------------------------");
+        }
+        my_shared<Object> sp2{sp};
+
+        if (debug) {
+            LOG1("");
+            LOG1("---------------------------------------------------");
+            LOG1("Chiamata costruttore di my_shared passando parametro \"new Object\"");
+            LOG1("my_shared<Object> sp3(new Object());");
+            LOG1("---------------------------------------------------");
+        }
+        my_shared<Object> sp3{new Object()};
+
+        cout << "Ptr counter di sp: " << sp.use_count() << endl;
+        cout << "Ptr counter di sp2: " << sp3.use_count() << endl;
+        cout << "Ptr counter di sp3: " << sp3.use_count() << endl;
+        cout << "Tracker sp:" << sp->refs() << endl;
+        cout << "Tracker sp2:" << sp2->refs() << endl;
+        cout << "Tracker sp3:" << sp3->refs() << endl;
         sp3 = sp2;
-        cout << "use " << sp.use_count() << endl;
-        cout << "Tracker " << sp->refs() << endl;
+        cout << "Ptr counter di sp: " << sp.use_count() << endl;
+        cout << "Ptr counter di sp2: " << sp2.use_count() << endl;
+        cout << "Ptr counter di sp3: " << sp3.use_count() << endl;
+        cout << "Tracker sp:" << sp->refs() << endl;
+        cout << "Tracker sp2:" << sp2->refs() << endl;
+        cout << "Tracker sp3:" << sp3->refs() << endl;
     }
 
     cout << "Tracker " << Object::refs() << endl;
@@ -101,7 +133,14 @@ void test_ptree() {
 }
 
 int main() {
-    test_refs();
-    //test_shared();
+    // Esercizio 1: Implementare un tracker in grado di tracciare in modo distinto classi arbitrarie.
+    //test_refs();
+
+    /* Esercizio 2: Implementare una versione semplificata di shared_ptr (senza gestire i weak_ptr) che
+     permetta di tenere traccia delle referenze a puntatori nativi e de-allocarli automaticamente
+     quando le referenze sono a zero */
+    test_shared();
+
+
     //test_ptree();
 }
