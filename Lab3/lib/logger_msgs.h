@@ -10,4 +10,6 @@
 #define LOG3(x, y, z) std::cout << x << " " << y << " " << z << std::endl
 #define LOG4(x, y, z, w) std::cout << x << " " << y << " " << z << " " << w << std::endl
 
+bool debug = false;
+
 #endif //SYSTEM_PROGRAMMING_LOGGER_MSGS_H

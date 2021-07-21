@@ -4,6 +4,13 @@
 #include <cstdlib>
 #include "logger_msgs.h"
 
+/*
+ * Questo Tracker e' in grado di tracciare in modo distinto classi arbitrarie di qualsiasi
+ * tipo. Questo e' possibile perche' una classe template che usa il pattern CRTP genera
+ * un tipo differente per ogni specializzazione e quindi si hanno diversi attributi "count"
+ * static, uno per ogni nuovo tipo generato, e non solo uno condiviso fra tutti.
+ */
+
 template <typename D>
 class Tracker {
     static u_int count;
@@ -11,7 +18,7 @@ class Tracker {
 public:
     Tracker() {count++;}
     ~Tracker() {
-        LOG2("Deconstructor for", (void*) this);
+        if(debug) LOG2("Deconstructor for", (void*) this);
         count--;
     }
 
