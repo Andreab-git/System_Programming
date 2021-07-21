@@ -2,7 +2,7 @@
 // Created by andrea on 24/03/21.
 //
 
-#include "../lib/DurationLogger.h"
+#include "../lib/duration_logger.h"
 
 #include <utility>
 

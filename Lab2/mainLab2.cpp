@@ -1,6 +1,6 @@
 #include <iostream>
-#include "lib/DurationLogger.h"
-#include "lib/Base.h"
+#include "lib/duration_logger.h"
+#include "lib/base.h"
 #include <memory>
 
 using namespace std;
