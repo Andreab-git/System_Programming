@@ -146,13 +146,22 @@ public:
 
     /** <h3>Descrizione</h3>
      *
-     *  .<br>
+     * Aggiunge un File, ritorna null se non lo puo' creare.<br>
      *
-     * @return
+     * @param name: il nome del File che si vuole creare.
+     * @param size: la dimensione del File che si sta creando.
+     * @return file: lo shared_ptr che punta ad un elemento di tipo File, oppure null ptr
      */
     shared_ptr<File> addFile(const string &name, uintmax_t size) {
-        shared_ptr<File> f = make_shared<File>(name, size);
-        children.push_back(f);
+        shared_ptr<File> f = nullptr;
+        try {
+            f = make_shared<File>(name, size);
+            children.push_back(f);
+        } catch (const bad_alloc& e) {
+            cout << "Allocation failed: " << e.what() << endl;
+            f = nullptr;
+            return f;
+        }
         return f;
     }
 
@@ -189,24 +198,32 @@ public:
 
 
     /** <h3>Descrizione</h3>
-     *  Fornisce un puntatore .<br>
+     *  Fornisce uno shared_ptr<Directory> che punta ad una Directory.<br>
      *
      * @param name: Il nome della directory di cui si vuole ottenere un puntatore.
-     * @return
+     * @return shared_ptr: puo' essere nullptr se la Directory di nome <b><i>name</i></b> non esiste.
      */
-    shared_ptr<Directory> getDir(const string &name) {
+    shared_ptr<Directory> getDirectory(const string &name) {
+        // Cerco di ottenere un puntatore ad una Directory
         shared_ptr<Base> dir = this->get(name);
+        // Se il puntatore e' uguale a null oppure non si tratta di una directory
         if (dir == nullptr || dir->mediaType() != is_a_Dir) {
+            // ritorno uno shared_ptr a nullptr
             return shared_ptr<Directory>(nullptr);
         } else {
+            // eseguo un dynamic_pointer_cast di tipo Directory del valore del puntatore ottenuto
+            // usando il metodo this->get(name).
+            // dynamic pointer cast ritorna una copia dello shared_ptr<Base> e ne esegue il casting a
+            // shared_ptr<Directory>
             return dynamic_pointer_cast<Directory>(dir);
         }
     };
 
     /** <h3>Descrizione</h3>
-     *  .<br>
+     *  Fornisce un puntatore di tipo shared_ptr<File> al file di nome <i>name</i>
+     *  contenuto nella directory.<br>
      *
-     * @return
+     * @return shared_ptr<File>: puo' essere nullptr qualora il nome del File non fosse presente.
      */
     shared_ptr<File> getFile(string name) {
         shared_ptr<Base> file = this->get(name);
@@ -235,11 +252,11 @@ public:
         return false;
     }
 
-     /** <h3>Descrizione</h3>
-     *  Restituisce il tipo di istanza (Directory) codificato come intero.<br>
-     *
-     *  @return is_a_dir: intero rappresentante il tipo di istanza, in questo caso vale 0
-     */
+    /** <h3>Descrizione</h3>
+    *  Restituisce il tipo di istanza (Directory) codificato come intero.<br>
+    *
+    *  @return is_a_dir: intero rappresentante il tipo di istanza, in questo caso vale 0
+    */
     int mediaType() const override {
         return is_a_Dir;
     }

@@ -16,8 +16,8 @@ int main() {
   // trovata.
   auto alfa = root->addDirectory("alfa");
   root->addDirectory("beta")->addDirectory("beta1");
-  root->getDir("beta")->addDirectory("beta2");
-  alfa->getDir("..")->ls(4);
+    root->getDirectory("beta")->getDirectory("beta2");
+    alfa->getDirectory("..")->ls(4);
 
   cout<<"----"<<endl;
 
